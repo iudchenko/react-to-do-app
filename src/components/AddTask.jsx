@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTasksDispatch } from "../contexts/TasksContext";
 import { HiOutlinePlus } from "react-icons/hi2";
+import { toast } from "react-hot-toast";
 
 export default function AddTask() {
   const [text, setText] = useState("");
@@ -17,13 +18,17 @@ export default function AddTask() {
         <button
           className="flex gap-2 items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
           onClick={() => {
-            if (text === "") return;
+            if (text === "") {
+              toast.error("Please, add task description");
+              return;
+            }
             setText("");
             dispatch({
               type: "added",
               id: crypto.randomUUID(),
               text: text,
             });
+            toast.success("Task successfully added!");
           }}
         >
           <HiOutlinePlus />

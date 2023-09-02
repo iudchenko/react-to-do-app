@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useTasksDispatch } from "../contexts/TasksContext";
+import { done } from "../utils/done";
 import {
   HiOutlineBookmarkSquare,
   HiOutlinePencilSquare,
   HiOutlineTrash,
 } from "react-icons/hi2";
+import { toast } from "react-hot-toast";
 
 function Task({ task }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -15,7 +17,7 @@ function Task({ task }) {
     taskContent = (
       <>
         <input
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           value={task.text}
           autoFocus
           onChange={(e) => {
@@ -34,7 +36,7 @@ function Task({ task }) {
     taskContent = <>{task.text}</>;
   }
   return (
-    <div className="flex justify-between gap-2 cursor-pointer items-center">
+    <div className="flex justify-between gap-2 items-center">
       <label className="flex cursor-pointer items-center gap-2">
         <input
           className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 shrink-0	"
@@ -48,9 +50,15 @@ function Task({ task }) {
                 done: e.target.checked,
               },
             });
+            if (e.target.checked) {
+              const doneMessage = done[Math.floor(Math.random() * done.length)];
+              toast(doneMessage, {
+                icon: "👏",
+              });
+            }
           }}
         />
-        {taskContent}
+        <span className={task.done ? "line-through" : ""}>{taskContent}</span>
       </label>
       <div className="flex items-center gap-2">
         {!isEditing && (
@@ -78,6 +86,8 @@ function Task({ task }) {
               type: "deleted",
               id: task.id,
             });
+
+            toast.success("Task successfully deleted!");
           }}
         >
           <HiOutlineTrash />
